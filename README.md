@@ -1,36 +1,57 @@
-# Quizgen Cloud - MVP Version
+# ☁️ Quizgen Cloud - Hệ Thống Tạo Đề Thi Tự Động
 
-Hệ thống tạo đề thi trắc nghiệm tự động trên nền tảng Điện toán đám mây. Dự án này được phát triển để đáp ứng yêu cầu của **Buổi 3 - Build: Phát triển ứng dụng**.
+**Quizgen Cloud** là một hệ thống ứng dụng công nghệ Điện toán đám mây (Cloud Computing) nhằm hỗ trợ việc quản lý ngân hàng câu hỏi và tự động tạo đề thi trắc nghiệm. 
 
-## 🚀 Các tính năng chính (Core Functions)
-- **Authentication**: Người dùng bắt buộc phải đăng nhập (thông qua Google Auth) để sử dụng hệ thống.
-- **Data Import**: Upload ngân hàng câu hỏi dưới dạng file `.csv` lên Cloud (Firebase Firestore).
-- **Exam Generation**: Thuật toán xử lý trên Cloud giúp lấy ngẫu nhiên danh sách câu hỏi và sinh đề thi tự động.
-- **Database Storage**: Lưu trữ đề thi vừa tạo vào Database, đảm bảo có thể xem lại kết quả.
+Dự án này được phát triển nhằm tối ưu hóa quy trình tổ chức thi cử và đáp ứng yêu cầu của **Buổi 3 - Build: Phát triển ứng dụng**.
 
-## 🗂 Cấu trúc công nghệ
-- **Frontend**: React (khởi tạo bằng Vite)
-- **Backend / Database**: Firebase (Auth, Firestore)
-- **Dataset**: File dữ liệu `mmlu_dataset.csv` bao gồm 100 câu hỏi môn Khoa học Máy tính trích xuất từ bộ dữ liệu MMLU trên Hugging Face.
+---
+
+## 🎯 Mô tả hệ thống (System Description)
+Hệ thống cho phép người dùng đăng nhập an toàn, tải lên ngân hàng câu hỏi môn Khoa học máy tính, từ đó ứng dụng sẽ tự động chọn lọc ngẫu nhiên để kết xuất thành một đề thi hoàn chỉnh. Toàn bộ dữ liệu (tài khoản, câu hỏi, đề thi) và tiến trình đều được xử lý và lưu trữ hoàn toàn trên nền tảng Cloud, đảm bảo tính an toàn, đồng bộ và truy xuất tốc độ cao.
+
+- **Frontend:** Xây dựng bằng React + Vite (Giao diện người dùng tương tác).
+- **Backend & Database:** Firebase Authentication (Xác thực người dùng) & Firebase Cloud Firestore (Lưu trữ và truy xuất dữ liệu NoSQL).
+- **Dataset:** Sử dụng tập dữ liệu 100 câu hỏi môn Computer Science được trích xuất từ bộ `MMLU` (Hugging Face).
+
+---
+
+## 🔄 Logic đường đi (User Flow & Logic)
+
+Đường đi của dữ liệu và người dùng trong hệ thống tuân theo một luồng (flow) chặt chẽ như sau:
+
+1. **🔒 Xác thực (Login):** Khách truy cập bắt buộc phải xác thực danh tính (Đăng nhập bằng tài khoản Google qua Firebase Auth) để vào hệ thống.
+2. **📂 Nhập dữ liệu (Upload):** Người dùng (Giáo viên/Admin) chọn file `mmlu_dataset.csv` từ máy tính để đưa lên.
+3. **⚙️ Xử lý trên Cloud (Process):**
+   - Hệ thống parse (đọc) file CSV.
+   - Thuật toán tự động lấy ngẫu nhiên danh sách câu hỏi để sinh ra một cấu trúc đề thi mới.
+4. **💾 Lưu trữ (Storage):** Cấu trúc đề thi vừa được sinh ra sẽ lập tức được đẩy (push) lên Cloud Firestore để lưu trữ vĩnh viễn.
+5. **📊 Kết xuất kết quả (Render):** Hệ thống lấy ngược dữ liệu từ Database về và hiển thị danh sách đề thi hoàn chỉnh lên giao diện Dashboard.
+
+> **Sơ đồ luồng:** `Login` ➔ `Upload CSV` ➔ `Submit & Randomize (Thuật toán)` ➔ `Lưu vào Firestore` ➔ `Hiển thị Đề thi`.
+
+---
 
 ## 🛠 Hướng dẫn cài đặt và chạy thử
-1. Clone repository về máy.
-2. Cài đặt các thư viện cần thiết bằng lệnh:
+
+1. Clone repository về máy:
+   ```bash
+   git clone https://github.com/Yenphuong114/Quizgen_Cloud.git
+   ```
+2. Cài đặt các thư viện cần thiết:
    ```bash
    npm install
    ```
-3. Cấu hình Firebase:
-   - Mở file `src/firebase.js`
-   - Thay thế cấu hình `firebaseConfig` mẫu bằng thông tin dự án thực tế trên Firebase Console của bạn.
-   - Bật phương thức đăng nhập **Google** trong phần Authentication trên Firebase Console.
-4. Khởi chạy ứng dụng:
+3. Cấu hình Firebase (tại file `src/firebase.js`): Thay thế thông tin cấu hình bằng Project của bạn. Hãy đảm bảo đã bật **Google Sign-in** trong mục Authentication.
+4. Chạy môi trường phát triển:
    ```bash
    npm run dev
    ```
-5. Mở trình duyệt và truy cập vào đường dẫn cục bộ (thường là `http://localhost:5173`).
+5. Mở trình duyệt và truy cập: `http://localhost:5173`
 
-## 📥 Dữ liệu mẫu (Dataset)
-Bạn có thể sử dụng trực tiếp file `mmlu_dataset.csv` có sẵn trong thư mục gốc của dự án để test tính năng Import.
+*(Lưu ý: File dữ liệu mẫu `mmlu_dataset.csv` đã được đính kèm sẵn trong mã nguồn để bạn có thể test trực tiếp tính năng Upload).*
 
-## 📄 Kiến trúc User Flow
-`Login` -> `Nhập dữ liệu (Upload CSV)` -> `Submit` -> `Cloud xử lý (Randomize)` -> `Database lưu` -> `Trả kết quả trên Dashboard`.
+---
+
+## 👩‍💻 Tác giả (Authorship & Copyright)
+- **Thiết kế & Phát triển bởi:** Yến Phương (@Yenphuong114)
+- **Bản quyền © 2026.** Dự án này là sản phẩm cá nhân được xây dựng cho mục đích nghiên cứu và học tập kiến trúc Cloud Computing. Vui lòng ghi rõ nguồn và không sao chép thương mại nếu chưa có sự đồng ý của tác giả.
