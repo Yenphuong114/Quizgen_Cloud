@@ -10,27 +10,41 @@ export default function ExamGenerator() {
   const handleGenerateExam = async () => {
     setLoading(true);
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-      const response = await fetch(`${API_BASE_URL}/api/exams/generate`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ numQuestions })
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || "Có lỗi xảy ra khi tạo đề từ Server");
+      // 1. Truy vấn lấy toàn bộ câu hỏi từ Cloud Firestore
+      const querySnapshot = await getDocs(collection(db, "Questions"));
+      if (querySnapshot.empty) {
+        alert("Chưa có câu hỏi nào trong hệ thống! Vui lòng nạp file CSV trước.");
+        return;
       }
 
-      // Backend đã trả về đối tượng đề thi hoàn chỉnh
-      setExam(result);
+      let allQuestions = [];
+      querySnapshot.forEach((docSnap) => {
+        allQuestions.push({ id: docSnap.id, ...docSnap.data() });
+      });
+
+      // 2. Thuật toán Random xáo trộn ngẫu nhiên
+      const shuffled = allQuestions.sort(() => 0.5 - Math.random());
+      const selectedQuestions = shuffled.slice(0, Math.min(numQuestions, allQuestions.length));
+
+      // 3. Lưu đề thi vào collection ExamPapers trên Firestore
+      const examData = {
+        title: `Đề thi ngẫu nhiên ${new Date().toLocaleTimeString()}`,
+        total_questions: selectedQuestions.length,
+        questions: selectedQuestions,
+        created_at: new Date()
+      };
+
+      const docRef = await addDoc(collection(db, "ExamPapers"), examData);
+
+      // Hiển thị đề thi ra giao diện
+      setExam({
+        id: docRef.id,
+        ...examData
+      });
 
     } catch (error) {
-      console.error(error);
-      alert("Lỗi khi tạo đề: " + error.message);
+      console.error("Lỗi khi tạo đề:", error);
+      alert("Lỗi khi tạo đề từ Cloud Firestore: " + error.message);
     } finally {
       setLoading(false);
     }

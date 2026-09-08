@@ -32,26 +32,23 @@ export default function QuestionUploader({ onUploadSuccess }) {
             correct_answer: row.correct_answer
           }));
 
-          // Gọi API của Backend (hỗ trợ cả Localhost và Cloud URL)
-          const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-          const response = await fetch(`${API_BASE_URL}/api/questions/upload`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ questions: formattedQuestions })
+          // Ghi trực tiếp lên Google Cloud Firestore qua Batch Write (Serverless Architecture)
+          const batch = writeBatch(db);
+          const questionsRef = collection(db, "Questions");
+
+          formattedQuestions.forEach((q) => {
+            const newDocRef = doc(questionsRef);
+            batch.set(newDocRef, {
+              ...q,
+              created_at: new Date()
+            });
           });
 
-          const result = await response.json();
-
-          if (!response.ok) {
-            throw new Error(result.error || "Có lỗi xảy ra từ Server");
-          }
-
-          setStatus(`✅ Thành công! ${result.message}`);
+          await batch.commit();
+          setStatus(`✅ Thành công! Đã nạp thành công ${formattedQuestions.length} câu hỏi vào Cloud Firestore.`);
           if (onUploadSuccess) onUploadSuccess();
         } catch (error) {
-          console.error(error);
+          console.error("Lỗi khi upload:", error);
           setStatus("❌ Lỗi: " + error.message);
         } finally {
           setLoading(false);
