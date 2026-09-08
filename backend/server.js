@@ -15,25 +15,53 @@ app.use((req, res, next) => {
   next();
 });
 
-// Khởi tạo Firebase Admin SDK
+// Khởi tạo Firebase Admin SDK (hỗ trợ cả biến môi trường FIREBASE_SERVICE_ACCOUNT và file cục bộ)
 const serviceAccountPath = './serviceAccountKey.json';
 let db = null;
-if (fs.existsSync(serviceAccountPath)) {
-  const serviceAccount = require(serviceAccountPath);
-  initializeApp({
-    credential: cert(serviceAccount)
-  });
-  console.log("✅ Đã kết nối Firebase Admin SDK thành công.");
-  db = getFirestore();
-} else {
-  console.error("❌ LỖI NGHIÊM TRỌNG: Không tìm thấy file serviceAccountKey.json!");
-  console.error("Vui lòng vào Firebase Console -> Project Settings -> Service accounts -> Generate new private key");
-  console.error("Sau đó đổi tên file tải về thành 'serviceAccountKey.json' và copy vào thư mục 'backend'.");
+
+try {
+  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+    let serviceAccount;
+    try {
+      // Thử parse nếu là JSON string trực tiếp
+      serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    } catch {
+      // Nếu là Base64 string
+      const decoded = Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT, 'base64').toString('utf8');
+      serviceAccount = JSON.parse(decoded);
+    }
+    initializeApp({
+      credential: cert(serviceAccount)
+    });
+    console.log("✅ Đã kết nối Firebase Admin SDK qua biến môi trường FIREBASE_SERVICE_ACCOUNT.");
+    db = getFirestore();
+  } else if (fs.existsSync(serviceAccountPath)) {
+    const serviceAccount = require(serviceAccountPath);
+    initializeApp({
+      credential: cert(serviceAccount)
+    });
+    console.log("✅ Đã kết nối Firebase Admin SDK qua file serviceAccountKey.json.");
+    db = getFirestore();
+  } else {
+    console.error("❌ LỖI NGHIÊM TRỌNG: Không tìm thấy file serviceAccountKey.json hoặc biến môi trường FIREBASE_SERVICE_ACCOUNT!");
+  }
+} catch (initError) {
+  console.error("❌ LỖI khởi tạo Firebase Admin:", initError.message);
 }
 
-// Route mặc định khi truy cập http://localhost:5000
+// Route mặc định khi truy cập
 app.get('/', (req, res) => {
-  res.send("<h2>🚀 Quizgen Cloud API đang hoạt động mượt mà!</h2><p>Các Endpoint khả dụng: POST /api/questions/upload, POST /api/exams/generate</p>");
+  res.send("<h2>🚀 Quizgen Cloud API đang hoạt động mượt mà!</h2><p>Các Endpoint khả dụng: GET /health, POST /api/questions/upload, POST /api/exams/generate</p>");
+});
+
+// Health check endpoint cho Cloud Monitoring / Render / Uptime
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    database: db ? "connected" : "disconnected"
+  });
 });
 
 // ==========================================
