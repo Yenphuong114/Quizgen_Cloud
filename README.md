@@ -60,7 +60,7 @@ Dự án hoàn thiện theo yêu cầu nghiệm thu của **Buổi 4 - Nghiệm 
    npm install
    npm run dev
    ```
-   *(Truy cập `http://localhost:5173` để trải nghiệm ứng dụng)*
+   *(Truy cập `(https://quizgencloud.web.app/)` để trải nghiệm ứng dụng)*
 
 ---
 
