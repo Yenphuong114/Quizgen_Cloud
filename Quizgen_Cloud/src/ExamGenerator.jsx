@@ -182,8 +182,23 @@ export default function ExamGenerator({ onNavigateToManager }) {
       // CHẾ ĐỘ 2: 100% AI SÁNG TẠO MỚI (BÁM KIẾN THỨC CSV)
       // ==========================================
       else if (examMode === "ai") {
-        // Fix B1: Nếu backend không có proxy key thì mới yêu cầu key cá nhân
-        if (!backendAiAvailable && (!geminiApiKey || !geminiApiKey.trim())) {
+        // Kiểm tra lại backend một lần nữa (phòng trường hợp Render đang ngái ngủ và check ngầm chưa xong)
+        let isBackendAiReady = backendAiAvailable;
+        if (!isBackendAiReady) {
+          setLoadingMessage("🔄 Đang kết nối đánh thức máy chủ AI...");
+          try {
+            const checkRes = await api.checkBackendAiAvailable();
+            if (checkRes && checkRes.available) {
+              isBackendAiReady = true;
+              setBackendAiAvailable(true);
+            }
+          } catch (e) {
+            console.log("Wake up check failed", e);
+          }
+        }
+
+        // Fix B1: Nếu backend KHÔNG có proxy key thì mới yêu cầu key cá nhân
+        if (!isBackendAiReady && (!geminiApiKey || !geminiApiKey.trim())) {
           setLoading(false);
           setShowKeyModal(true);
           alert("Vui lòng nhập Google Gemini API Key (Miễn phí 100% không cần thẻ tín dụng) để sử dụng tính năng AI!");
@@ -201,7 +216,7 @@ export default function ExamGenerator({ onNavigateToManager }) {
           difficulty: aiDifficulty,
           sampleQuestions: samples,
           // B1: Nếu backend có proxy key thì truyền rỗng để server tự dùng
-          apiKey: backendAiAvailable ? "" : geminiApiKey
+          apiKey: isBackendAiReady ? "" : geminiApiKey
         });
 
         if (!aiQuestions || aiQuestions.length === 0) {
@@ -233,8 +248,23 @@ export default function ExamGenerator({ onNavigateToManager }) {
       // CHẾ ĐỘ 3: TRỘN CẢ HAI (HYBRID MIX)
       // ==========================================
       else if (examMode === "hybrid") {
+        // Kiểm tra lại backend một lần nữa (phòng trường hợp Render đang ngái ngủ và check ngầm chưa xong)
+        let isBackendAiReady = backendAiAvailable;
+        if (!isBackendAiReady) {
+          setLoadingMessage("🔄 Đang kết nối đánh thức máy chủ AI...");
+          try {
+            const checkRes = await api.checkBackendAiAvailable();
+            if (checkRes && checkRes.available) {
+              isBackendAiReady = true;
+              setBackendAiAvailable(true);
+            }
+          } catch (e) {
+            console.log("Wake up check failed", e);
+          }
+        }
+
         // Fix B1: Nếu backend không có proxy key thì mới yêu cầu key cá nhân
-        if (!backendAiAvailable && (!geminiApiKey || !geminiApiKey.trim())) {
+        if (!isBackendAiReady && (!geminiApiKey || !geminiApiKey.trim())) {
           setLoading(false);
           setShowKeyModal(true);
           alert("Vui lòng nhập Google Gemini API Key để sinh phần câu hỏi AI kết hợp!");
@@ -260,7 +290,7 @@ export default function ExamGenerator({ onNavigateToManager }) {
           difficulty: hybridAiDifficulty,
           sampleQuestions: allBankQuestions.slice(0, 15),
           // B1: Nếu backend có proxy key thì truyền rỗng để server tự dùng
-          apiKey: backendAiAvailable ? "" : geminiApiKey
+          apiKey: isBackendAiReady ? "" : geminiApiKey
         });
 
         if (hybridSaveAiToBank && aiQuestions && aiQuestions.length > 0) {
