@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Báo Cáo Nghiệm Thu Đồ Án Buổi 4 - Quizgen Cloud</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap');
+
+:root {
+    --primary: #1B365D;
+    --primary-light: #2E5B88;
+    --accent: #2563eb;
+    --success: #16a34a;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border: #cbd5e1;
+}
+
+body {
+    font-family: 'Merriweather', Georgia, serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    line-height: 1.8;
+    margin: 0;
+    padding: 0;
+    font-size: 15px;
+}
+
+.document-container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: var(--card-bg);
+    padding: 60px 70px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+    border-radius: 8px;
+}
+
+.cover-page {
+    border: 3px double var(--primary);
+    padding: 50px 30px;
+    text-align: center;
+    border-radius: 6px;
+    margin-bottom: 50px;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.cover-uni {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #475569;
+    letter-spacing: 0.5px;
+}
+
+.cover-subject {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-top: 5px;
+    margin-bottom: 40px;
+}
+
+.cover-report-type {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--danger);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 15px;
+}
+
+.cover-project-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--primary);
+    text-transform: uppercase;
+    line-height: 1.3;
+    margin-bottom: 10px;
+}
+
+.cover-project-sub {
+    font-size: 16px;
+    font-style: italic;
+    color: var(--text-muted);
+    margin-bottom: 50px;
+}
+
+.cover-info {
+    text-align: left;
+    display: inline-block;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    background: #f1f5f9;
+    padding: 20px 30px;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary);
+    margin-bottom: 40px;
+}
+
+.cover-info table {
+    border: none;
+    margin: 0;
+}
+
+.cover-info td {
+    border: none;
+    padding: 5px 12px;
+}
+
+.cover-footer {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--primary);
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 8px;
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary-light);
+    margin-top: 30px;
+    margin-bottom: 12px;
+}
+
+h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #334155;
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+p {
+    margin-bottom: 16px;
+    text-align: justify;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+}
+
+th, td {
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    vertical-align: top;
+}
+
+th {
+    background-color: var(--primary);
+    color: #ffffff;
+    font-weight: 600;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+.highlight-box {
+    background-color: #eff6ff;
+    border-left: 4px solid var(--accent);
+    padding: 15px 20px;
+    margin: 20px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 14.5px;
+}
+
+.badge-pass {
+    background-color: var(--success);
+    color: white;
+    padding: 3px 8px;
+    font-weight: 700;
+    border-radius: 4px;
+    font-size: 12px;
+    display: inline-block;
+}
+
+code, pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13px;
+    background-color: #f1f5f9;
+    color: #0f172a;
+}
+
+pre {
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow-x: auto;
+    line-height: 1.5;
+}
+
+.center { text-align: center; }
+.bold { font-weight: 700; }
+
+.print-bar {
+    position: sticky;
+    top: 0;
+    background: #1e293b;
+    color: white;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+    z-index: 100;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+.btn-print {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-print:hover {
+    background: #1d4ed8;
+}
+
+@media print {
+    .print-bar { display: none; }
+    body { background: white; font-size: 12pt; }
+    .document-container { max-width: 100%; margin: 0; padding: 0; box-shadow: none; }
+    .cover-page { height: 95vh; page-break-after: always; }
+    h1 { page-break-before: always; }
+}
+</style>
+</head>
+<body>
+
+<div class="print-bar">
+    <div>📄 <b>Báo Cáo Nghiệm Thu Đồ Án Buổi 4 - Quizgen Cloud</b></div>
+    <div>
+        <button class="btn-print" onclick="window.print()">🖨️ In ra PDF / Máy in (Ctrl + P)</button>
+    </div>
+</div>
+
+<div class="document-container">
+
+<!-- TRANG BÌA -->
+<div class="cover-page">
+    <div class="cover-uni">BỘ GIÁO DỤC VÀ ĐÀO TẠO<br>TRƯỜNG ĐẠI HỌC KHOA HỌC TỰ NHIÊN / CÔNG NGHỆ THÔNG TIN</div>
+    <div class="cover-subject">HỌC PHẦN: ĐIỆN TOÁN ĐÁM MÂY (CLOUD COMPUTING)</div>
+    <hr style="width: 30%; border: 1px solid var(--primary); margin: 0 auto 30px auto;">
+
+    <div style="margin: 40px 0;">
+        <div class="cover-report-type">BÁO CÁO NGHIỆM THU ĐỒ ÁN BUỔI 4</div>
+        <div class="cover-project-name">HỆ THỐNG QUẢN LÝ NGÂN HÀNG CÂU HỎI & TẠO ĐỀ THI TRẮC NGHIỆM TỰ ĐỘNG TRÊN NỀN TẢNG CLOUD</div>
+        <div class="cover-project-name" style="color: var(--primary-light); font-size: 22px;">(QUIZGEN CLOUD)</div>
+        <div class="cover-project-sub">Đánh Giá Toàn Diện & Nghiệm Thu Sản Phẩm MVP Đạt Chuẩn Cloud Native</div>
+    </div>
+
+    <div class="cover-info">
+        <table>
+            <tr><td class="bold" style="width: 160px;">Sinh viên thực hiện:</td><td>Yến Phương</td></tr>
+            <tr><td class="bold">Tài khoản GitHub:</td><td>@Yenphuong114</td></tr>
+            <tr><td class="bold">Kho mã nguồn:</td><td><a href="https://github.com/Yenphuong114/Quizgen_Cloud" target="_blank">github.com/Yenphuong114/Quizgen_Cloud</a></td></tr>
+            <tr><td class="bold">Giai đoạn nghiệm thu:</td><td>Buổi 4 - Hoàn thiện & Đánh giá chất lượng</td></tr>
+            <tr><td class="bold">Thời gian báo cáo:</td><td>Tháng 09/2026</td></tr>
+        </table>
+    </div>
+
+    <div class="cover-footer">
+        TP. HỒ CHÍ MINH, THÁNG 09/2026
+    </div>
+</div>
+
+<!-- BẢNG TỔNG HỢP 11 HẠNG MỤC SẢN PHẨM NỘP & CẢI TIẾN BUỔI 4 -->
+<h1>📑 BẢNG TỔNG HỢP 11 HẠNG MỤC SẢN PHẨM NỘP & CẢI TIẾN BUỔI 4</h1>
+
+<p>Tại giai đoạn <b>Buổi 4 - Nghiệm thu MVP & Đánh giá toàn diện sản phẩm</b>, hệ thống <b>Quizgen Cloud</b> đã đạt bước tiến nhảy vọt về cả mặt kỹ thuật kiến trúc, chất lượng mã nguồn, số liệu kiểm thử và phân tích kinh tế đám mây so với giai đoạn trước. Dưới đây là ma trận đối chiếu toàn diện 11 hạng mục đầu ra bắt buộc:</p>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 5%;">STT</th>
+            <th style="width: 17%;">Đầu mục Output</th>
+            <th style="width: 25%;">Trạng thái giai đoạn trước (Buổi 3/Sơ khai)</th>
+            <th style="width: 33%;">Những cải tiến vượt bậc tại Buổi 4</th>
+            <th style="width: 20%;">Minh chứng / Vị trí</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="center bold">1</td>
+            <td class="bold">Cloud URL</td>
+            <td>Chỉ vận hành cục bộ trên `localhost:5173` và `5000`, phụ thuộc máy cá nhân, không thể truy cập từ xa.</td>
+            <td><b>Decoupled Architecture:</b> Tách biệt Frontend (Vercel CDN) và Backend (Render Container - Singapore). Cấu hình Authorized Domains trên Firebase cho phép Google OAuth chạy live công khai có HTTPS.</td>
+            <td><code>docs/DEPLOYMENT_GUIDE_CLOUD_URL.md</code></td>
+        </tr>
+        <tr>
+            <td class="center bold">2</td>
+            <td class="bold">MVP hoàn chỉnh</td>
+            <td>Mã nguồn chưa tách lớp, upload CSV chậm, chưa xử lý ngoại lệ đầu vào, giao diện thô sơ.</td>
+            <td>Nâng cấp <b>React 19 + Express 5</b>, giao diện Glassmorphism cao cấp. Tích hợp <b>PapaParse</b> streaming ở client và <b>Firestore Batch Write</b> nạp 110 câu hỏi trong 1 transaction duy nhất. Thuật toán Fisher-Yates tối ưu $O(N)$.</td>
+            <td>Thư mục mã nguồn <code>/Quizgen_Cloud</code> & <code>/backend</code></td>
+        </tr>
+        <tr>
+            <td class="center bold">3</td>
+            <td class="bold">Test Case</td>
+            <td>Chưa có ma trận kiểm thử, chỉ test tay ngẫu hứng không theo tiêu chuẩn.</td>
+            <td>Thiết lập <b>Ma trận 11 kịch bản kiểm thử (TC-01 đến TC-11)</b> chuẩn hóa bao phủ 5 tầng: Health Check, Validation ngoại lệ, Data Ingestion, Exam Randomness, Cloud Persistence, và Auth lifecycle.</td>
+            <td><code>docs/TEST_PLAN_AND_RESULTS.md</code> (Mục 2)</td>
+        </tr>
+        <tr>
+            <td class="center bold">4</td>
+            <td class="bold">Test Result</td>
+            <td>Không có dữ liệu minh chứng, chưa bắt lỗi khi input sai định dạng.</td>
+            <td><b>Tỷ lệ đạt 100% (11/11 Test Cases PASS)</b>. Bắt lỗi HTTP 400 chính xác, kiểm chứng tính ngẫu nhiên giữa 2 đề độc lập, xác thực Document ID lưu trữ thực tế trên Cloud Firestore.</td>
+            <td><code>docs/TEST_PLAN_AND_RESULTS.md</code> (Mục 3)</td>
+        </tr>
+        <tr>
+            <td class="center bold">5</td>
+            <td class="bold">Performance Result</td>
+            <td>Không có số liệu benchmark, không đo lường độ trễ mạng hay tải trang.</td>
+            <td>Benchmark thực nghiệm bằng <code>performance.now()</code>: API Latency <b>~15.34 ms</b>; Batch upload 110 câu chỉ <b>2.17s (~50.7 câu/s)</b>; Sinh đề 5-10 câu chỉ <b>2.0s - 3.0s</b>. Lighthouse FCP 0.8s, LCP 1.2s, CLS 0.00. Đề xuất Index Random giảm xuống &lt;200ms.</td>
+            <td><code>docs/PERFORMANCE_REPORT.md</code></td>
+        </tr>
+        <tr>
+            <td class="center bold">6</td>
+            <td class="bold">Cost Estimation</td>
+            <td>Chưa có ước tính tài chính hoặc chỉ dự đoán cảm tính.</td>
+            <td>Xây dựng mô hình tài chính 3 kịch bản theo bảng giá GCP: MVP: <b>$0/tháng</b> (Free Tier); Trường học 1K users: <b>~$7.30/tháng</b>; Doanh nghiệp 50K users: <b>~$33.22/tháng</b>. Đề xuất 3 chiến lược tối ưu: Caching, Scale-to-Zero, TTL.</td>
+            <td><code>docs/COST_ESTIMATION.md</code></td>
+        </tr>
+        <tr>
+            <td class="center bold">7</td>
+            <td class="bold">Security Consideration</td>
+            <td>Bảo mật sơ sài, nguy cơ lộ credentials và khóa dịch vụ.</td>
+            <td>Bảo mật hiện tại: Google OAuth 2.0 phi mật khẩu, HTTPS TLS 1.3, giấu <code>serviceAccountKey.json</code> qua <code>.gitignore</code> và Environment Variables. Thiết lập <b>Lộ trình 4 lớp</b>: RBAC Custom Claims, JWT Middleware, Firestore Rules, Rate Limiting.</td>
+            <td><code>docs/SECURITY_CONSIDERATION.md</code></td>
+        </tr>
+        <tr>
+            <td class="center bold">8</td>
+            <td class="bold">Screenshot</td>
+            <td>Thiếu ảnh minh chứng hoặc ảnh chụp màn hình không theo luồng.</td>
+            <td>Chuẩn hóa <b>Quy trình 4 màn hình nghiệp vụ</b>: Đăng nhập Google ➔ Nạp ngân hàng câu hỏi có thanh tiến trình ➔ Sinh đề thi có mã Document ID và highlight đáp án ➔ Quản trị Firebase Console đồng bộ dữ liệu live.</td>
+            <td>Chương 3 Báo cáo nghiệm thu</td>
+        </tr>
+        <tr>
+            <td class="center bold">9</td>
+            <td class="bold">Dataset</td>
+            <td>Sử dụng vài câu hỏi giả định (mock data) tự nhập tay.</td>
+            <td>Chuẩn hóa bộ dữ liệu học thuật quốc tế <b>MMLU (Massive Multitask Language Understanding)</b> gồm <b>110 câu hỏi</b> Khoa học Máy tính & Cloud. Tài liệu hóa Schema chi tiết và pipeline chuyển đổi sang NoSQL.</td>
+            <td><code>docs/DATASET_DOCUMENTATION.md</code> & <code>mmlu_dataset.csv</code></td>
+        </tr>
+        <tr>
+            <td class="center bold">10</td>
+            <td class="bold">GitHub</td>
+            <td>Repo commit lộn xộn, có nguy cơ đưa file thừa hoặc key bí mật lên mạng.</td>
+            <td>Repository chuẩn hóa: <a href="https://github.com/Yenphuong114/Quizgen_Cloud">Yenphuong114/Quizgen_Cloud</a>. Phân chia rõ ràng <code>/Quizgen_Cloud</code>, <code>/backend</code>, <code>/docs</code>. File <code>README.md</code> chuyên nghiệp, cấu hình <code>.gitignore</code> chuẩn bảo mật.</td>
+            <td>GitHub Repository công khai</td>
+        </tr>
+        <tr>
+            <td class="center bold">11</td>
+            <td class="bold">Draft Report</td>
+            <td>Chưa có báo cáo tổng hợp hoàn chỉnh.</td>
+            <td>Hoàn thành báo cáo nghiệm thu chuyên sâu <b>DRAFT_REPORT.md</b> dài hơn 200 dòng, gồm 9 chương học thuật bài bản, đầy đủ số liệu thực nghiệm và sơ đồ phân tích kỹ thuật.</td>
+            <td>File <code>DRAFT_REPORT.md</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- CHƯƠNG 1 -->
+<h1>CHƯƠNG 1: TỔNG QUAN HỆ THỐNG & ĐẶT VẤN ĐỀ</h1>
+<h2>1.1. Bối cảnh và Tính cấp thiết của đề tài</h2>
+<p>Trong kỷ nguyên chuyển đổi số giáo dục và đào tạo trực tuyến, việc quản lý ngân hàng câu hỏi và tổ chức thi trắc nghiệm đóng vai trò trọng yếu trong việc đánh giá năng lực người học. Tuy nhiên, các phương pháp truyền thống trên máy chủ đơn lẻ (On-premise) hoặc bảng tính thủ công bộc lộ nhiều hạn chế: tốn kém thời gian, thiếu tính ngẫu nhiên khách quan, khó chia sẻ tài nguyên và chi phí vận hành phần cứng vật lý đắt đỏ nhưng thường xuyên quá tải trong giờ thi cao điểm.</p>
+<p>Đề tài <b>"Hệ Thống Quản Lý Ngân Hàng Câu Hỏi & Tạo Đề Thi Trắc Nghiệm Tự Động Trên Nền Tảng Cloud" (Quizgen Cloud)</b> được phát triển nhằm ứng dụng sức mạnh của các dịch vụ Điện toán đám mây (Cloud Computing) giải quyết toàn diện các thách thức trên.</p>
+
+<h2>1.2. Mục tiêu nghiên cứu</h2>
+<ul>
+    <li>Xây dựng giải pháp Cloud Native có khả năng truy cập mọi lúc, mọi nơi qua giao diện Web hiện đại.</li>
+    <li>Tự động hóa quy trình nạp ngân hàng câu hỏi chuẩn định dạng CSV chỉ trong vài giây.</li>
+    <li>Thuật toán Fisher-Yates xáo trộn câu hỏi ngẫu nhiên tuyệt đối và lưu trữ bền vững trên Cloud Firestore.</li>
+    <li>Đảm bảo an toàn định danh với giao thức Google OAuth 2.0 phi mật khẩu.</li>
+    <li>Tối ưu hóa chi phí vận hành ở mức $0.00 cho giai đoạn thử nghiệm nhờ kiến trúc Serverless & Free Tier.</li>
+</ul>
+
+<!-- CHƯƠNG 2 -->
+<h1>CHƯƠNG 2: KIẾN TRÚC CLOUD & QUY TRÌNH LUỒNG DỮ LIỆU</h1>
+<h2>2.1. Kiến trúc phân tách 3 tầng (Decoupled Cloud Architecture)</h2>
+<div class="highlight-box">
+<pre>
+                  ┌──────────────────────────────────────────────────┐
+                  │                 NGƯỜI DÙNG / TRÌNH DUYỆT         │
+                  └───────────────┬──────────────────────────────────┘
+                                  │ HTTPS / TLS 1.3
+                                  ▼
+     ┌─────────────────────────────────────────────────────────────┐
+     │                     TẦNG FRONTEND (Vercel Edge)             │
+     │  - React 19 Framework + Vite Bundler                        │
+     │  - Client-side CSV Stream Parsing (PapaParse)               │
+     │  - Responsive Glassmorphism Dashboard UI                    │
+     └───────────────┬─────────────────────────────┬───────────────┘
+                     │                             │
+    Google Sign-in   │                             │ Gọi REST API (JSON)
+    Popup Auth       │                             │
+                     ▼                             ▼
+┌──────────────────────────────┐ ┌───────────────────────────────────┐
+│     FIREBASE AUTHENTICATION  │ │     TẦNG BACKEND (Render / GCP)   │
+│ - Google OAuth 2.0 Token     │ │ - Node.js Express Server v5       │
+│ - Quản lý phiên đăng nhập    │ │ - Thuật toán Fisher-Yates Shuffle │
+└──────────────────────────────┘ │ - Firebase Admin SDK Service      │
+                                 └─────────────────┬─────────────────┘
+                                                   │
+                                                   │ Batch Write & Read
+                                                   ▼
+                                 ┌───────────────────────────────────┐
+                                 │     GOOGLE CLOUD FIRESTORE        │
+                                 │  - Collection 'Questions'         │
+                                 │  - Collection 'ExamPapers'        │
+                                 └───────────────────────────────────┘
+</pre>
+</div>
+
+<h2>2.2. Luồng dữ liệu thời gian thực (Data Pipeline)</h2>
+<ol>
+    <li><b>Xác thực:</b> Người dùng kích hoạt Google Sign-In ➔ Firebase Authentication cấp Token an toàn.</li>
+    <li><b>Streaming Parsing:</b> Người dùng tải lên file CSV ➔ PapaParse đọc luồng dữ liệu ngay trên trình duyệt và cấu trúc thành mảng JSON câu hỏi.</li>
+    <li><b>Cloud Batch Ingestion:</b> Gửi dữ liệu tới <code>POST /api/questions/upload</code> ➔ Backend dùng <code>db.batch()</code> nạp 110 câu hỏi vào Firestore trong 1 transaction mạng.</li>
+    <li><b>Sinh đề thi ngẫu nhiên:</b> Nhận yêu cầu tạo $N$ câu ➔ Backend truy vấn collection <code>Questions</code>, xáo trộn bằng Fisher-Yates và lưu đề thi vào collection <code>ExamPapers</code> với Document ID duy nhất.</li>
+    <li><b>Hiển thị:</b> Frontend nhận đề thi và hiển thị trực quan lên Dashboard.</li>
+</ol>
+
+<!-- CHƯƠNG 3 -->
+<h1>CHƯƠNG 3: TÍNH NĂNG MVP VÀ MINH CHỨNG VẬN HÀNH (SCREENSHOTS)</h1>
+<h2>3.1. Các tính năng cốt lõi</h2>
+<ul>
+    <li><b>Xác thực Google OAuth 2.0:</b> Đăng nhập nhanh 1 chạm, không lưu mật khẩu thô.</li>
+    <li><b>Nạp dữ liệu ngân hàng tự động:</b> Hỗ trợ file CSV chuẩn MMLU hàng trăm câu hỏi.</li>
+    <li><b>Sinh đề thi ngẫu nhiên tùy biến:</b> Lựa chọn số lượng 5 câu, 10 câu, 20 câu... độc lập và công bằng.</li>
+    <li><b>Lưu trữ đám mây vĩnh viễn:</b> Mọi đề thi được cấp Document ID duy nhất trên Cloud Firestore.</li>
+</ul>
+
+<h2>3.2. Mô tả 4 màn hình minh chứng vận hành</h2>
+<ul>
+    <li><b>Màn hình 1 - Authentication Panel:</b> Giao diện phong cách Glassmorphism, nút bấm đăng nhập Google an toàn.</li>
+    <li><b>Màn hình 2 - Data Ingestion:</b> Thanh tiến trình trực quan: <code>Đang đọc CSV</code> ➔ <code>Đang đẩy lên Cloud API</code> ➔ <code>Đã thêm thành công 110 câu hỏi</code>.</li>
+    <li><b>Màn hình 3 - Exam Generator:</b> Nhập số lượng câu hỏi, hệ thống trả về đề thi có mã Document ID (ví dụ: <code>VxFFY7BxtWEvd6WMtd41</code>), đánh dấu màu nổi bật cho đáp án đúng.</li>
+    <li><b>Màn hình 4 - Firebase Console:</b> Minh chứng dữ liệu thời gian thực trong 2 collections <code>Questions</code> và <code>ExamPapers</code> trên Google Cloud.</li>
+</ul>
+
+<!-- CHƯƠNG 4 -->
+<h1>CHƯƠNG 4: KẾ HOẠCH & KẾT QUẢ KIỂM THỬ (TEST RESULTS 100% PASS)</h1>
+<h2>4.1. Ma trận kịch bản kiểm thử</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Mã TC</th>
+            <th>Hạng mục</th>
+            <th>Tên kịch bản</th>
+            <th>Dữ liệu đầu vào</th>
+            <th>Kết quả kỳ vọng</th>
+            <th>Thực tế</th>
+            <th>Trạng thái</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="center bold">TC-01</td>
+            <td>System Health</td>
+            <td>Kiểm tra API Health</td>
+            <td><code>GET /health</code></td>
+            <td>HTTP 200, status "ok", DB "connected"</td>
+            <td>HTTP 200, Uptime: 76.9s</td>
+            <td class="center"><span class="badge-pass">PASS ✅</span></td>
+        </tr>
+        <tr>
+            <td class="center bold">TC-02</td>
+            <td>System Health</td>
+            <td>Kiểm tra Root API</td>
+            <td><code>GET /</code></td>
+            <td>HTTP 200 kèm danh sách endpoint</td>
+            <td>HTTP 200, hiển thị endpoints</td>
+            <td class="center"><span class="badge-pass">PASS ✅</span></td>
+        </tr>
+        <tr>
+            <td class="center bold">TC-03</td>
+            <td>Validation</td>
+            <td>Upload dữ liệu rỗng</td>
+            <td><code>POST .../upload</code> body: <code>{}</code></td>
+            <td>HTTP 400 Bad Request thông báo lỗi</td>
+            <td>HTTP 400: "Dữ liệu không hợp lệ"</td>
+            <td class="center"><span class="badge-pass">PASS ✅</span></td>
+        </tr>
+        <tr>
+            <td class="center bold">TC-04</td>
+            <td>Data Import</td>
+            <td>Upload câu hỏi hợp lệ</td>
+            <td>Mảng JSON câu hỏi</td>
+            <td>HTTP 200, batch write Firestore</td>
+            <td>HTTP 200: "Đã thêm thành công"</td>
+            <td class="center"><span class="badge-pass">PASS ✅</span></td>
+        </tr>
+        <tr>
+            <td class="center bold">TC-05</td>
+            <td>Exam Gen</td>
+            <td>Sinh đề thi 5 câu</td>
+            <td><code>{ numQuestions: 5 }</code></td>
+            <td>HTTP 200, đúng 5 câu, có Exam ID</td>
+            <td>Exam ID: <code>VxFFY7BxtWEvd6WMtd41</code></td>
+            <td class="center"><span class="badge-pass">PASS ✅</span></td>
+        </tr>
+        <tr>
+            <td class="center bold">TC-06</td>
+            <td>Exam Gen</td>
+            <td>Sinh đề thi 10 câu</td>
+            <td><code>{ numQuestions: 10 }</code></td>
+            <td>HTTP 200, đúng 10 câu</td>
+            <td>Exam ID: <code>jIJd6Hvgut2LRKkwHbk5</code></td>
+            <td class="center"><span class="badge-pass">PASS ✅</span></td>
+        </tr>
+        <tr>
+            <td class="center bold">TC-07</td>
+            <td>Algorithm</td>
+            <td>Kiểm tra ngẫu nhiên</td>
+            <td>Sinh 2 đề liên tiếp</td>
+            <td>2 đề thi xáo trộn độc lập</td>
+            <td>Đề 1 khác Đề 2 (Khác biệt: 100%)</td>
+            <td class="center"><span class="badge-pass">PASS ✅</span></td>
+        </tr>
+        <tr>
+            <td class="center bold">TC-08</td>
+            <td>Storage</td>
+            <td>Lưu trữ Cloud</td>
+            <td>Document trong <code>ExamPapers</code></td>
+            <td>Dữ liệu tồn tại trên Firestore</td>
+            <td>Document ID: <code>27rwMYN69McTR9bI3VHx</code></td>
+            <td class="center"><span class="badge-pass">PASS ✅</span></td>
+        </tr>
+        <tr>
+            <td class="center bold">TC-09</td>
+            <td>Authentication</td>
+            <td>Đăng nhập Google</td>
+            <td>Popup Google Sign-In</td>
+            <td>Cấp Token, chuyển Dashboard</td>
+            <td>Popup cấp Auth Token hợp lệ</td>
+            <td class="center"><span class="badge-pass">PASS ✅</span></td>
+        </tr>
+        <tr>
+            <td class="center bold">TC-10</td>
+            <td>Authentication</td>
+            <td>Đăng xuất an toàn</td>
+            <td>Nút "Đăng xuất"</td>
+            <td>Xóa session, quay về login</td>
+            <td><code>signOut(auth)</code> thành công</td>
+            <td class="center"><span class="badge-pass">PASS ✅</span></td>
+        </tr>
+        <tr>
+            <td class="center bold">TC-11</td>
+            <td>UI Integration</td>
+            <td>Upload CSV trên UI</td>
+            <td>File <code>mmlu_dataset.csv</code></td>
+            <td>Parse và nạp thành công</td>
+            <td>Nạp 110 câu trong 2.17 giây</td>
+            <td class="center"><span class="badge-pass">PASS ✅</span></td>
+        </tr>
+    </tbody>
+</table>
+<p><b>Tổng kết:</b> 11/11 Test Cases đạt chuẩn (100% Pass), 0 lỗi.</p>
+
+<!-- CHƯƠNG 5 -->
+<h1>CHƯƠNG 5: BÁO CÁO ĐO LƯỜNG HIỆU NĂNG THỰC NGHIỆM (PERFORMANCE)</h1>
+<ul>
+    <li><b>Độ trễ API cơ bản (<code>GET /health</code>):</b> Trung bình <b>15.34 ms</b> (trạng thái ấm chỉ ~4.6 ms - 6.9 ms).</li>
+    <li><b>Tốc độ nạp dữ liệu ngân hàng (110 câu):</b> <b>2,170.07 ms (~2.17 giây)</b>, đạt thông lượng <b>~50.7 câu hỏi / giây</b>.</li>
+    <li><b>Tốc độ sinh đề thi:</b>
+        <ul>
+            <li>Đề thi 5 câu: <b>2,023.48 ms (~2.02 giây)</b>.</li>
+            <li>Đề thi 10 câu: <b>2,995.05 ms (~3.00 giây)</b>.</li>
+        </ul>
+    </li>
+    <li><b>Frontend Web Vitals (Lighthouse):</b> FCP <b>0.8s</b> (Tốt), LCP <b>1.2s</b> (Tốt), CLS <b>0.00</b> (Hoàn hảo), Bundle gọn nhẹ <b>~245 KB (gzipped)</b>.</li>
+    <li><b>Giải pháp tối ưu thế hệ mới:</b> Đánh chỉ mục băm ngẫu nhiên <code>random_hash</code> giảm thời gian sinh đề xuống <b>&lt; 200 ms</b> và bộ đệm Redis Cache <b>&lt; 50 ms</b>.</li>
+</ul>
+
+<!-- CHƯƠNG 6 -->
+<h1>CHƯƠNG 6: DỰ TOÁN CHI PHÍ ĐÁM MÂY (COST ESTIMATION)</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Kịch bản Quy mô</th>
+            <th>Quy mô Người dùng</th>
+            <th>Tài nguyên sử dụng</th>
+            <th>Chi phí ước tính / tháng</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="bold">Kịch bản 1: Thử nghiệm / MVP (Hiện tại)</td>
+            <td>50 - 200 người dùng</td>
+            <td>100K reads, 5K writes Firestore, Vercel CDN, Render Free</td>
+            <td class="center bold" style="color: var(--success);">$0.00 USD (Miễn phí 100%)</td>
+        </tr>
+        <tr>
+            <td class="bold">Kịch bản 2: Cấp Trường học</td>
+            <td>1,000 sinh viên, 20,000 lượt đề/tháng</td>
+            <td>2 triệu reads, 25K writes Firestore, Render Starter ($7)</td>
+            <td class="center bold">~$7.30 USD (~185.000 VNĐ)</td>
+        </tr>
+        <tr>
+            <td class="bold">Kịch bản 3: Cấp Thành phố / Doanh nghiệp</td>
+            <td>50,000 thí sinh cao điểm, 500,000 lượt đề/tháng</td>
+            <td>5 triệu reads (Index Random), Cloud Run Auto-scaling, 50GB Egress</td>
+            <td class="center bold">~$33.22 USD (~830.000 VNĐ)</td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- CHƯƠNG 7 -->
+<h1>CHƯƠNG 7: ĐÁNH GIÁ AN TOÀN & BẢO MẬT (SECURITY CONSIDERATION)</h1>
+<p><b>Hiện trạng an toàn:</b> Google OAuth 2.0 phi mật khẩu, HTTPS TLS 1.3 mã hóa toàn trình, quản lý khóa bí mật qua <code>.gitignore</code> và biến môi trường <code>FIREBASE_SERVICE_ACCOUNT</code>, kiểm soát nguồn gốc CORS.</p>
+<p><b>Lộ trình nâng cấp 4 lớp cho bản thương mại:</b></p>
+<ol>
+    <li>Phân quyền vai trò RBAC bằng <code>Firebase Custom Claims</code> (Teacher, Admin, Student).</li>
+    <li>Xây dựng Middleware <code>authenticateToken</code> kiểm tra chữ ký số JWT Google trên Express.</li>
+    <li>Thiết lập bộ quy tắc <code>Firestore Security Rules</code> khóa quyền truy cập database trực tiếp từ client.</li>
+    <li>Áp dụng <code>express-rate-limit</code> chống tấn công Flood Request / DoS (giới hạn 30 req/15 phút).</li>
+</ol>
+
+<!-- CHƯƠNG 8 -->
+<h1>CHƯƠNG 8: TẬP DỮ LIỆU THỬ NGHIỆM (DATASET MMLU)</h1>
+<p>Tập dữ liệu <code>mmlu_dataset.csv</code> trích xuất từ bộ benchmark chuẩn quốc tế <b>MMLU của Đại học UC Berkeley</b> gồm <b>110 câu hỏi trắc nghiệm</b> Khoa học Máy tính & Điện toán đám mây. Dữ liệu được chuẩn hóa các trường <code>question_text</code>, <code>optionA</code>-<code>optionD</code>, <code>correct_answer</code> và chuyển đổi tối ưu sang NoSQL Document trên Cloud Firestore.</p>
+
+<!-- CHƯƠNG 9 -->
+<h1>CHƯƠNG 9: HƯỚNG DẪN TRIỂN KHAI CLOUD URL & QUẢN TRỊ GITHUB</h1>
+<ul>
+    <li><b>Backend Cloud URL:</b> Triển khai Web Service trên Render.com (Region Singapore) ➔ <code>https://quizgen-cloud-backend.onrender.com</code>.</li>
+    <li><b>Frontend Cloud URL:</b> Triển khai trên Vercel Edge ➔ <code>https://quizgen-cloud.vercel.app</code>.</li>
+    <li><b>Firebase Authorized Domains:</b> Thêm domain Vercel vào danh sách ủy quyền để Google OAuth hoạt động thông suốt.</li>
+    <li><b>GitHub Repository:</b> Quản lý mã nguồn chuẩn tại <a href="https://github.com/Yenphuong114/Quizgen_Cloud">github.com/Yenphuong114/Quizgen_Cloud</a>.</li>
+</ul>
+
+<!-- CHƯƠNG 10 -->
+<h1>CHƯƠNG 10: KẾT LUẬN & ĐỊNH HƯỚNG PHÁT TRIỂN TIẾP THEO</h1>
+<p>Hệ thống <b>Quizgen Cloud</b> đã hoàn thành 100% mục tiêu của Buổi 4: vận hành ổn định trên kiến trúc đám mây 3 tầng phân tán, vượt qua 11/11 ca kiểm thử, hiệu năng phản hồi xuất sắc, chi phí $0 và chuẩn bị sẵn sàng lộ trình thương mại hóa với AI tự động sinh đề từ tài liệu PDF/Word.</p>
+
+<hr style="border: 0.5px solid var(--border); margin-top: 50px; margin-bottom: 20px;">
+<div style="text-align: center; font-style: italic; font-size: 13px; color: var(--text-muted);">
+    --- BÁO CÁO NGHIỆM THU ĐỒ ÁN BUỔI 4 HOÀN TẤT ---<br>
+    Quizgen Cloud - Bản quyền © 2026 bởi Yến Phương (@Yenphuong114).
+</div>
+
+</div>
+
+</body>
+</html>

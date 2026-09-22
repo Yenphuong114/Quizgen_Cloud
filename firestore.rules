@@ -2,9 +2,33 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Cho phép người dùng đã đăng nhập Google đọc và ghi dữ liệu
-    match /{document=**} {
-      allow read, write: if request.auth != null;
+    
+    // Hàm trợ giúp kiểm tra đăng nhập
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Quản lý thông tin tài khoản người dùng
+    match /Users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Ngân hàng câu hỏi
+    match /Questions/{questionId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // Danh sách đề thi đã tạo
+    match /ExamPapers/{examId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // Bài nộp thi của sinh viên
+    match /ExamSubmissions/{submissionId} {
+      allow read, write: if isAuthenticated();
     }
   }
 }

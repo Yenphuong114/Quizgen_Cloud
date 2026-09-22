@@ -24,20 +24,68 @@ Dự án hoàn thiện theo yêu cầu nghiệm thu của **Buổi 4 - Nghiệm 
 
 ---
 
-## 🎯 Kiến trúc công nghệ (Cloud Architecture)
-- **Frontend:** React 19 + Vite, thiết kế giao diện Glassmorphism hiện đại, xử lý streaming CSV với `PapaParse`.
-- **Backend API:** Node.js Express v5, xử lý logic xáo trộn ngẫu nhiên Fisher-Yates, kết nối qua Firebase Admin SDK.
-- **Cloud Database:** Google Cloud Firestore (NoSQL) lưu trữ dữ liệu tập trung, hỗ trợ Batch Writes hiệu năng cao.
-- **Authentication:** Firebase Authentication (Google OAuth 2.0).
+## 🏗️ Kiến trúc Cloud (Cloud Architecture)
+
+```
+┌───────────────────────────────────────────────────────────────────┐
+│                 QUIZGEN CLOUD — CLOUD ARCHITECTURE                 │
+├─────────────────┬──────────────────────────────┬──────────────────┤
+│   CLIENT LAYER  │       CLOUD SERVICES          │  BACKEND LAYER   │
+│                 │                               │                  │
+│ 🎓 GIẢNG VIÊN  │  ┌─── Firebase Auth ───┐      │ Node.js Express  │
+│  Browser        │  │  Google OAuth 2.0    │      │ server.js        │
+│  - Upload CSV   │  └──────────────────────┘      │ REST API         │
+│  - Sinh đề thi  │                               │ :5000            │
+│  - Xem KQ       │  ┌─── Firestore DB ────┐      │                  │
+│                 │  │  Questions (kho)     │◄────►│ - Auth Middleware │
+│ 🎒 SINH VIÊN   │  │  ExamPapers (đề)    │      │ - RBAC           │
+│  Browser        │  │  ExamSubmissions    │      │ - AI Proxy       │
+│  - Nhập mã thi  │  │  Users              │      │   (GEMINI KEY)   │
+│  - Làm bài      │  └──────────────────────┘      │                  │
+│  - Xem điểm     │                               │                  │
+│                 │  ┌─── Firebase Host ───┐      │                  │
+│                 │  │  quizgencloud        │      │                  │
+│                 │  │  .web.app (CDN)      │      │                  │
+│                 │  └──────────────────────┘      │                  │
+│                 │                               │                  │
+│                 │  ┌─── Gemini AI API ───┐      │                  │
+│                 │  │  gemini-2.5-flash    │◄────┤ /api/ai/generate  │
+│                 │  │  (Cloud AI Service)  │      │ (Backend Proxy)  │
+│                 │  └──────────────────────┘      │                  │
+└─────────────────┴──────────────────────────────┴──────────────────┘
+```
+
+**Cloud Services sử dụng:**
+| Thành phần | Dịch vụ Cloud | Vai trò |
+|---|---|---|
+| Frontend | Firebase Hosting (CDN) | Phân phối giao diện web toàn cầu |
+| Database | Google Cloud Firestore | Lưu trữ câu hỏi, đề thi, kết quả |
+| Auth | Firebase Authentication | Đăng nhập Google OAuth 2.0 |
+| AI | Google Gemini API | Sinh câu hỏi AI (Backend Proxy) |
+| Backend | Node.js (Cloud Server) | REST API, RBAC, AI Proxy |
 
 ---
 
 ## 🔄 Luồng dữ liệu (Data & User Flow)
+
+**Quy trình Giảng viên:**
 ```
-[Google Sign-in] ➔ [Upload mmlu_dataset.csv] ➔ [Batch Ingestion Firestore] ➔ [Cloud Randomize] ➔ [Render Đề thi]
+[Đăng nhập Google] → [Upload CSV] → [Chọn Phương thức Sinh Đề]
+     ↓ Phương thức 1: 100% Kho CSV (Không cần API Key)
+     ↓ Phương thức 2: 100% AI (Dùng Backend Proxy Key / Key cá nhân)
+     ↓ Phương thức 3: Kết hợp CSV + AI (Hybrid)
+[Đề thi tạo thành công] → [Nhận Mã Thi 6 số] → [Gửi cho Sinh viên]
+```
+
+**Quy trình Sinh viên:**
+```
+[Đăng nhập Google] → [Nhập Mã Thi 6 số] → [Làm bài tự động đếm giờ]
+     → [Nộp bài] → [Xem điểm & đáp án ngay lập tức]
+     → [Kết quả tự động lưu vào Firestore]
 ```
 
 ---
+
 
 ## 🛠 Hướng dẫn chạy thử nghiệm tại Local
 
@@ -50,9 +98,21 @@ Dự án hoàn thiện theo yêu cầu nghiệm thu của **Buổi 4 - Nghiệm 
    ```bash
    cd backend
    npm install
+   ```
+   
+   Tạo file `.env` trong thư mục `backend/` (hoặc sao chép từ `.env.example`):
+   ```env
+   PORT=5000
+   # Lấy key miễn phí tại: https://aistudio.google.com/app/apikey
+   GEMINI_API_KEY=your_gemini_api_key_here
+   ```
+   
+   ```bash
    node server.js
    ```
    *(Backend chạy tại `http://localhost:5000`)*
+   
+   > 💡 **Lưu ý:** Khi có `GEMINI_API_KEY` trong `.env`, tất cả giảng viên đều dùng được tính năng AI Sinh Đề mà không cần tự nhập key cá nhân.
 
 3. **Khởi động Frontend:**
    ```bash
