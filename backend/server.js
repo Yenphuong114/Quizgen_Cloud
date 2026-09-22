@@ -689,7 +689,8 @@ app.get('/api/submissions', authenticateToken, async (req, res) => {
  * Kiểm tra xem Backend có cấu hình GEMINI_API_KEY không.
  * Frontend dùng endpoint này để ẩn/hiện nút "Cài đặt API Key".
  */
-app.get('/api/ai/check', authenticateToken, (req, res) => {
+// Endpoint công khai - không cần đăng nhập để kiểm tra (tránh false-negative khi Render đang ngủ)
+app.get('/api/ai/check', (req, res) => {
   const hasKey = !!(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.trim());
   res.json({
     available: hasKey,
