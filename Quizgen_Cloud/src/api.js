@@ -15,7 +15,7 @@ import {
   where
 } from "firebase/firestore";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://quizgen-cloud.onrender.com";
 
 /**
  * Lấy Firebase ID Token của người dùng hiện tại
@@ -577,6 +577,7 @@ Không thêm bất kỳ markdown phụ hay văn bản ngoài mảng JSON.`;
         score,
         correct_count: correctCount,
         total_questions: totalQuestions,
+        review, // Lưu luôn review detail (Fix B2)
         submitted_at: serverTimestamp()
       };
 

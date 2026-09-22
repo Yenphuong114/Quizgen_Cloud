@@ -9,8 +9,10 @@ export default function ExamManager() {
   const [activeTab, setActiveTab] = useState("exams"); // 'exams' | 'submissions'
   const [loading, setLoading] = useState(true);
   const [selectedExamFilter, setSelectedExamFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("time"); // 'time' | 'score'
+  const [examSortBy, setExamSortBy] = useState("time_desc"); // 'time_desc' | 'time_asc' | 'subject_asc'
+  const [sortBy, setSortBy] = useState("time_desc"); // 'time_desc' | 'time_asc' | 'score_desc'
   const [deletingId, setDeletingId] = useState(null);
+  const [selectedReview, setSelectedReview] = useState(null); // Lưu trữ bài nộp đang xem chi tiết
 
   // 1. Tải danh sách đề thi
   const fetchExams = async () => {
@@ -65,6 +67,17 @@ export default function ExamManager() {
     }
   };
 
+  // Lọc và sắp xếp danh sách Đề Thi
+  const sortedExams = [...exams].sort((a, b) => {
+    if (examSortBy === "subject_asc") {
+      return (a.subject || "").localeCompare(b.subject || "");
+    }
+    const timeA = a.created_at?.seconds || (a.start_time ? new Date(a.start_time).getTime() : 0);
+    const timeB = b.created_at?.seconds || (b.start_time ? new Date(b.start_time).getTime() : 0);
+    if (examSortBy === "time_asc") return timeA - timeB;
+    return timeB - timeA; // time_desc default
+  });
+
   // Lọc và sắp xếp bảng điểm
   const filteredSubmissions = submissions
     .filter(s => {
@@ -72,10 +85,13 @@ export default function ExamManager() {
       return s.exam_id === selectedExamFilter || s.exam_title?.includes(selectedExamFilter);
     })
     .sort((a, b) => {
-      if (sortBy === "score") {
+      if (sortBy === "score_desc") {
         return (b.score || 0) - (a.score || 0);
       }
-      return (b.submitted_at?.seconds || 0) - (a.submitted_at?.seconds || 0);
+      const timeA = a.submitted_at?.seconds || 0;
+      const timeB = b.submitted_at?.seconds || 0;
+      if (sortBy === "time_asc") return timeA - timeB;
+      return timeB - timeA; // time_desc default
     });
 
   // Thống kê nhanh cho lớp học
@@ -169,7 +185,34 @@ export default function ExamManager() {
             <p style={{ margin: 0 }}>Chưa có đề thi nào trong hệ thống. Hãy sang Tab <strong>1. Sinh Đề Thông Minh</strong> để tạo đề mới.</p>
           </div>
         ) : (
-          <div style={{ overflowX: "auto" }}>
+          <div>
+            {/* Thanh công cụ sắp xếp danh sách đề */}
+            <div style={{ 
+              display: "flex", 
+              justifyContent: "flex-end", 
+              marginBottom: "15px", 
+              background: "rgba(255,255,255,0.7)", 
+              padding: "10px 16px", 
+              borderRadius: "10px" 
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <label style={{ fontSize: "13px", fontWeight: "600", color: "#555" }}>
+                  🔃 Sắp xếp theo:
+                </label>
+                <select 
+                  className="input-field" 
+                  value={examSortBy} 
+                  onChange={(e) => setExamSortBy(e.target.value)}
+                  style={{ padding: "6px 12px", fontSize: "13px" }}
+                >
+                  <option value="time_desc">Thời gian tạo (Mới nhất trước)</option>
+                  <option value="time_asc">Thời gian tạo (Cũ nhất trước)</option>
+                  <option value="subject_asc">Môn học (A-Z)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style={{ overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px", textAlign: "left" }}>
               <thead>
                 <tr style={{ borderBottom: "2px solid rgba(0,0,0,0.1)", color: "#555" }}>
@@ -183,7 +226,7 @@ export default function ExamManager() {
                 </tr>
               </thead>
               <tbody>
-                {exams.map(e => (
+                {sortedExams.map(e => (
                   <tr key={e.id} style={{ borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
                     <td style={{ padding: "12px 10px", fontWeight: "bold", color: "#d81b60" }}>
                       #{e.exam_code}
@@ -211,6 +254,7 @@ export default function ExamManager() {
               </tbody>
             </table>
           </div>
+        </div>
         )
       ) : (
         /* ================= TAB 2: BẢNG ĐIỂM REALTIME CHO NHIỀU SINH VIÊN ================= */
@@ -256,8 +300,9 @@ export default function ExamManager() {
                 onChange={(e) => setSortBy(e.target.value)}
                 style={{ padding: "6px 12px", fontSize: "13px" }}
               >
-                <option value="time">Thời gian nộp (Mới nhất)</option>
-                <option value="score">Điểm số (Cao nhất ➔ Thấp nhất)</option>
+                <option value="time_desc">Thời gian nộp (Mới nhất)</option>
+                <option value="time_asc">Thời gian nộp (Cũ nhất)</option>
+                <option value="score_desc">Điểm số (Cao nhất ➔ Thấp nhất)</option>
               </select>
             </div>
           </div>
@@ -304,6 +349,7 @@ export default function ExamManager() {
                     <th style={{ padding: "10px" }}>Điểm số</th>
                     <th style={{ padding: "10px" }}>Số câu đúng</th>
                     <th style={{ padding: "10px" }}>Thời gian nộp</th>
+                    <th style={{ padding: "10px", textAlign: "center" }}>Hành động</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -328,12 +374,91 @@ export default function ExamManager() {
                           ? new Date(s.submitted_at.seconds * 1000).toLocaleTimeString('vi-VN') + " " + new Date(s.submitted_at.seconds * 1000).toLocaleDateString('vi-VN')
                           : "Vừa xong"}
                       </td>
+                      <td style={{ padding: "12px 10px", textAlign: "center" }}>
+                        <button 
+                          className="btn-primary" 
+                          onClick={() => setSelectedReview(s)}
+                          style={{ padding: "6px 12px", fontSize: "11px", borderRadius: "20px", whiteSpace: "nowrap" }}
+                        >
+                          👁️ Xem Chi Tiết
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           )}
+        </div>
+      )}
+
+      {/* CHI TIẾT BÀI LÀM SINH VIÊN (MODAL CHO GIẢNG VIÊN) */}
+      {selectedReview && (
+        <div style={{
+          position: "fixed",
+          top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(0,0,0,0.5)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 1000,
+          padding: "20px"
+        }}>
+          <div className="glass-panel" style={{
+            width: "100%", maxWidth: "800px", maxHeight: "90vh", overflowY: "auto",
+            padding: "30px", position: "relative"
+          }}>
+            <button 
+              onClick={() => setSelectedReview(null)}
+              style={{
+                position: "absolute", top: "15px", right: "15px",
+                background: "none", border: "none", fontSize: "24px", cursor: "pointer", color: "#666"
+              }}
+            >
+              ×
+            </button>
+            <h2 style={{ margin: "0 0 5px 0", color: "#ff5c8a" }}>
+              📝 Bài làm: {selectedReview.exam_title}
+            </h2>
+            <div style={{ marginBottom: "15px", color: "#333", fontWeight: "600" }}>
+              Sinh viên: {selectedReview.student_name || selectedReview.student_email}
+            </div>
+            
+            <div style={{ display: "flex", gap: "20px", marginBottom: "20px", fontSize: "14px", color: "#555" }}>
+              <div>Điểm: <strong style={{ color: "#d81b60", fontSize: "18px" }}>{selectedReview.score}/10</strong></div>
+              <div>Đúng: <strong>{selectedReview.correct_count}/{selectedReview.total_questions}</strong></div>
+              <div>Thời gian nộp: <strong>{selectedReview.submitted_at?.seconds ? new Date(selectedReview.submitted_at.seconds * 1000).toLocaleString('vi-VN') : "Vừa xong"}</strong></div>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+              {selectedReview.review && selectedReview.review.length > 0 ? (
+                selectedReview.review.map((item, idx) => (
+                  <div key={idx} style={{
+                    padding: "15px",
+                    borderRadius: "10px",
+                    background: item.is_correct ? "rgba(46, 125, 50, 0.1)" : "rgba(214, 48, 49, 0.1)",
+                    border: item.is_correct ? "1px solid #2e7d32" : "1px solid #d63031"
+                  }}>
+                    <div style={{ fontWeight: "bold", marginBottom: "8px" }}>Câu {idx + 1}: {item.question_text}</div>
+                    <div style={{ fontSize: "14px" }}>
+                      <div style={{ color: item.is_correct ? "#2e7d32" : "#d63031" }}>
+                        👉 SV chọn: <strong>{item.student_answer}</strong>
+                      </div>
+                      {!item.is_correct && (
+                        <div style={{ color: "#2e7d32", marginTop: "4px" }}>
+                          ✅ Đáp án đúng: <strong>{item.correct_answer}</strong>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p style={{ color: "#888", fontStyle: "italic" }}>
+                  Bài làm này chưa được lưu chi tiết câu hỏi (phiên bản cũ).
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>

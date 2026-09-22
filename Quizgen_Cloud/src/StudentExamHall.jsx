@@ -19,6 +19,7 @@ export default function StudentExamHall({ user }) {
   // Lịch sử làm bài
   const [mySubmissions, setMySubmissions] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [selectedReview, setSelectedReview] = useState(null); // Lưu trữ bài nộp đang xem chi tiết
 
   // Tải danh sách đề thi & Thiết lập Realtime Listener để nhận đề mới ngay lập tức
   useEffect(() => {
@@ -294,11 +295,22 @@ export default function StudentExamHall({ user }) {
             </div>
 
             <button 
-              className="btn-primary" 
               onClick={() => { setActiveExam(null); setResult(null); }}
-              style={{ marginTop: "10px" }}
+              style={{ 
+                marginTop: "15px",
+                padding: "16px 40px", 
+                fontSize: "18px", 
+                fontWeight: "bold",
+                background: "linear-gradient(135deg, #ff8fab 0%, #d81b60 100%)",
+                color: "white",
+                border: "none",
+                borderRadius: "50px",
+                cursor: "pointer",
+                boxShadow: "0 6px 15px rgba(216, 27, 96, 0.3)",
+                transition: "all 0.2s"
+              }}
             >
-              ⬅️ Quay lại danh sách đề thi
+              🔙 Hoàn Tất & Trở Về Màn Hình Chính
             </button>
           </div>
         )}
@@ -596,6 +608,7 @@ export default function StudentExamHall({ user }) {
                     <th style={{ padding: "10px" }}>Điểm số</th>
                     <th style={{ padding: "10px" }}>Số câu đúng</th>
                     <th style={{ padding: "10px" }}>Thời gian nộp</th>
+                    <th style={{ padding: "10px", textAlign: "center" }}>Hành động</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -613,12 +626,87 @@ export default function StudentExamHall({ user }) {
                           ? new Date(sub.submitted_at.seconds * 1000).toLocaleString('vi-VN') 
                           : "Vừa xong"}
                       </td>
+                      <td style={{ padding: "12px 10px", textAlign: "center" }}>
+                        <button 
+                          className="btn-primary" 
+                          onClick={() => setSelectedReview(sub)}
+                          style={{ padding: "6px 12px", fontSize: "12px", borderRadius: "20px" }}
+                        >
+                          👁️ Xem Chi Tiết
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           )}
+        </div>
+      )}
+
+      {/* CHI TIẾT LỊCH SỬ BÀI LÀM (MODAL) */}
+      {selectedReview && (
+        <div style={{
+          position: "fixed",
+          top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(0,0,0,0.5)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 1000,
+          padding: "20px"
+        }}>
+          <div className="glass-panel" style={{
+            width: "100%", maxWidth: "800px", maxHeight: "90vh", overflowY: "auto",
+            padding: "30px", position: "relative"
+          }}>
+            <button 
+              onClick={() => setSelectedReview(null)}
+              style={{
+                position: "absolute", top: "15px", right: "15px",
+                background: "none", border: "none", fontSize: "24px", cursor: "pointer", color: "#666"
+              }}
+            >
+              ×
+            </button>
+            <h2 style={{ margin: "0 0 10px 0", color: "#ff5c8a" }}>
+              📝 Bài làm: {selectedReview.exam_title}
+            </h2>
+            <div style={{ display: "flex", gap: "20px", marginBottom: "20px", fontSize: "14px", color: "#555" }}>
+              <div>Điểm: <strong style={{ color: "#d81b60", fontSize: "18px" }}>{selectedReview.score}/10</strong></div>
+              <div>Đúng: <strong>{selectedReview.correct_count}/{selectedReview.total_questions}</strong></div>
+              <div>Thời gian nộp: <strong>{selectedReview.submitted_at?.seconds ? new Date(selectedReview.submitted_at.seconds * 1000).toLocaleString('vi-VN') : "Vừa xong"}</strong></div>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+              {selectedReview.review && selectedReview.review.length > 0 ? (
+                selectedReview.review.map((item, idx) => (
+                  <div key={idx} style={{
+                    padding: "15px",
+                    borderRadius: "10px",
+                    background: item.is_correct ? "rgba(46, 125, 50, 0.1)" : "rgba(214, 48, 49, 0.1)",
+                    border: item.is_correct ? "1px solid #2e7d32" : "1px solid #d63031"
+                  }}>
+                    <div style={{ fontWeight: "bold", marginBottom: "8px" }}>Câu {idx + 1}: {item.question_text}</div>
+                    <div style={{ fontSize: "14px" }}>
+                      <div style={{ color: item.is_correct ? "#2e7d32" : "#d63031" }}>
+                        👉 Bạn chọn: <strong>{item.student_answer}</strong>
+                      </div>
+                      {!item.is_correct && (
+                        <div style={{ color: "#2e7d32", marginTop: "4px" }}>
+                          ✅ Đáp án đúng: <strong>{item.correct_answer}</strong>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p style={{ color: "#888", fontStyle: "italic" }}>
+                  Bài làm này chưa được lưu chi tiết câu hỏi (phiên bản cũ).
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
