@@ -40,9 +40,9 @@ async function apiRequest(endpoint, options = {}) {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  // Timeout 3.5s để nếu Backend chưa deploy trên Cloud thì tự động chuyển sang Firebase SDK
+  // Tăng timeout lên 30s để chờ Render khởi động (Free tier thường mất 5-15s để spin up)
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 3500);
+  const timeoutId = setTimeout(() => controller.abort(), 30000);
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
